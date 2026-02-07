@@ -1,0 +1,31 @@
+{
+  "name": "flock-management",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "openapi:pull": "curl https://api.east-kirk-farm.com/openapi.json -o src/api/schema.json",
+    "openapi:types": "openapi-typescript src/api/schema.json -o src/api/schema.d.ts",
+    "openapi:update": "npm run openapi:pull && npm run openapi:types"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.9",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.16",
+    "@tanstack/react-query-devtools": "^5.91.2",
+    "openapi-fetch": "^0.15.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zustand": "^5.0.9"
+  }
+}
