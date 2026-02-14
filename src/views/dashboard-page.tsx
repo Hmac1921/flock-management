@@ -1,40 +1,32 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { ApiError } from '../api/client';
-import { dbCheckQuery, healthQuery  } from '../api/queries';
+import { dbCheckQuery, healthQuery, weatherQuery } from '../api/queries';
 import type {
   DbCheckResponse,
   HealthResponse,
 
 } from '../api/queries';
 
-import {
-
-  Badge,
-  Button,
-  Card,
-
-
-
-} from '../components/design-system';
-import { useStockStore } from '../store';
-
-import  dayjs from "dayjs";
+import { Badge, Button, Card } from '../components/design-system';
+import { WeatherCard } from '../components/sections/weather-card';
 
 
 export const DashboardPage = () => {
   const health = useQuery<HealthResponse, ApiError>(healthQuery);
   const dbCheck = useQuery<DbCheckResponse, ApiError>(dbCheckQuery);
-
+  const weather = useQuery(
+    weatherQuery({
+      lat: 58.513353,
+      lon: -3.219676,
+      days: 3,
+    })
+  );
   const dbCheckData = dbCheck.data as
     | { db: string; select_1: number }
     | undefined;
 
 
-
-
-  const { recordDelivery, scheduleAudit, resolveAudit, addLocation } =
-    useStockStore();
 
 
 
@@ -49,31 +41,17 @@ export const DashboardPage = () => {
       </div>
 
       <section className="mt-6 grid gap-6 md:grid-cols-2">
-
-
-        <Card
-          eyebrow={dayjs().format("DD/MM/YYYY")}
-          title="Weather"
-
+        <WeatherCard
+          data={weather.data ?? undefined}
+          isPending={weather.isPending}
+          isError={weather.isError}
+          error={weather.error as Error | undefined}
           footer={
             <div className="flex flex-wrap gap-2">
-              <Button onClick={() => recordDelivery(75)}>Record delivery</Button>
-              <Button variant="secondary" onClick={() => scheduleAudit()}>
-                Schedule audit
-              </Button>
-              <Button variant="secondary" onClick={() => resolveAudit()}>
-                Close audit
-              </Button>
-              <Button variant="secondary" onClick={() => addLocation()}>
-                Add warehouse
-              </Button>
+         i don't decide the weather,  i just display the weather, all complaints should be lodged with the met office - Helen
             </div>
           }
-        >
-          <div className="space-y-3 text-sm text-[--ink-muted]">
-         Weather
-          </div>
-        </Card>
+        />
       </section>
 
       <section className="mt-8 grid gap-6 md:grid-cols-2">
