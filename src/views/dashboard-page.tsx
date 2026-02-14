@@ -1,7 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { ApiError } from '../api/client';
-import { dbCheckQuery, healthQuery, weatherQuery } from '../api/queries';
+import {
+    dbCheckQuery,
+    healthQuery,
+    weatherQuery, type WeatherResponse,
+} from '../api/queries';
 import type {
   DbCheckResponse,
   HealthResponse,
@@ -10,18 +14,21 @@ import type {
 
 import { Badge, Button, Card } from '../components/design-system';
 import { WeatherCard } from '../components/sections/weather-card';
+import GrainCard from "../components/sections/grain-card.tsx";
 
 
 export const DashboardPage = () => {
   const health = useQuery<HealthResponse, ApiError>(healthQuery);
   const dbCheck = useQuery<DbCheckResponse, ApiError>(dbCheckQuery);
-  const weather = useQuery(
+  const weather = useQuery<WeatherResponse, ApiError>(
     weatherQuery({
       lat: 58.513353,
       lon: -3.219676,
-      days: 3,
+      days: 5,
     })
   );
+
+
   const dbCheckData = dbCheck.data as
     | { db: string; select_1: number }
     | undefined;
@@ -52,7 +59,11 @@ export const DashboardPage = () => {
             </div>
           }
         />
+
+<GrainCard />
       </section>
+
+
 
       <section className="mt-8 grid gap-6 md:grid-cols-2">
         <Card eyebrow="API Health" title="Service Status">

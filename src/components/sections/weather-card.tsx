@@ -66,6 +66,8 @@ export const WeatherCard = ({
   error,
   footer,
 }: WeatherCardProps) => {
+
+
   const tempUnit = data?.current_weather_units?.temperature ?? '°C';
   const windUnit = data?.current_weather_units?.windspeed ?? 'm/s';
   const rainUnit = data?.daily_units?.precipitation_sum ?? 'mm';
@@ -83,7 +85,7 @@ export const WeatherCard = ({
       min: minTemps[index],
       rain: precip[index],
     }))
-    .slice(0, 3);
+    .slice(0, 5);
 
   return (
     <Card
