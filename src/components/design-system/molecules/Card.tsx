@@ -20,7 +20,7 @@ export const Card = ({
 }: CardProps) => (
   <div
     className={cx(
-      'surface-gradient rounded-[--radius-lg] border border-[--border] bg-[--surface] p-6 shadow-[--shadow-card]',
+      'surface-gradient rounded border border-[--border] bg-[--surface] p-6 shadow-[--shadow-card]',
       className
     )}
     {...props}

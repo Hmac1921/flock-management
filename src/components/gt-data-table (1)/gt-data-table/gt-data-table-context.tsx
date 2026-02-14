@@ -41,7 +41,8 @@ export const Table = ({ children }: TableProps) => {
 
   return (
     <DataTableContext.Provider value={{ state, dispatch }}>
-      <div className="surface-gradient m-4 flex flex-col overflow-x-hidden rounded-[--radius-lg] border border-[--border] bg-[--surface] p-4 text-[--ink] shadow-[--shadow-card]">
+      <div className="surface-gradient m-4 flex flex-col overflow-x-hidden rounded-[--radius-lg] border border-border/30
+       bg-[--surface] p-4 text-[--ink] shadow-[--shadow-card]">
         {children}
       </div>
     </DataTableContext.Provider>
@@ -56,7 +57,7 @@ type ToolbarProps = {
 
 const Toolbar = ({ children }: ToolbarProps) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[--border] pb-3 pt-2">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 pt-2">
       {children}
     </div>
   );
@@ -68,7 +69,7 @@ type ToolbarPaginationProps = {
 
 const ToolbarPagination = ({ children }: ToolbarPaginationProps) => {
   return (
-    <div className="mt-3 flex flex-wrap items-center justify-end gap-4 border-t border-[--border] pt-3">
+    <div className="mt-3 flex flex-wrap items-center justify-end gap-4 border-t border-border pt-3">
       {children}
     </div>
   );
