@@ -1,5 +1,5 @@
 import createClient from 'openapi-fetch';
-import type { paths } from './schema';
+import type { components, paths } from './schema';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -21,14 +21,9 @@ export class ApiError extends Error {
   }
 }
 
-type HealthOk = { ok: boolean };
-type DbCheckOk = { db: string; select_1: number };
-type Sheep = {
-  guid: string;
-  tagnr: string;
-  name: string;
-  age: number;
-};
+type HealthOk = paths['/health']['get']['responses'][200]['content']['application/json'];
+type DbCheckOk = paths['/db-check']['get']['responses'][200]['content']['application/json'];
+type Sheep = components['schemas']['SheepOut'];
 
 export const getHealth = async (): Promise<HealthOk> => {
   const res = (await client.GET('/health', {})) as any;

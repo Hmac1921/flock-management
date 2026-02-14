@@ -39,17 +39,24 @@ const useRenderRows = <T extends Record<string, unknown>>(
         }
       };
       const renderCellType = () => {
+        const cellValue = item[col.field as keyof T];
+
         switch (col.cell) {
           case cellTypeConsts.LINK_TEXT:
             const linkTarget = (item as Record<string, unknown>).id ?? "";
             return (
               <a href={`${window.location.href}/${linkTarget}`}>
-                {renderCellContents(item[col.field as keyof T])}
+                {renderCellContents(cellValue)}
               </a>
             );
+          case cellTypeConsts.TEXT:
+          case cellTypeConsts.DATE:
+            return renderCellContents(cellValue);
+          case cellTypeConsts.CUSTOM:
+            return col.renderComponent ?? renderCellContents(cellValue);
 
           default:
-            <></>;
+            return renderCellContents(cellValue);
         }
       };
 

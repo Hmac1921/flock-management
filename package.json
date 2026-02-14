@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "openapi:pull": "curl https://api.east-kirk-farm.com/openapi.json -o src/api/schema.json",
+    "openapi:pull": "curl http://10.87.87.44:8000/openapi.json -o src/api/schema.json",
     "openapi:types": "openapi-typescript src/api/schema.json -o src/api/schema.d.ts",
     "openapi:update": "npm run openapi:pull && npm run openapi:types"
   },
@@ -16,16 +16,23 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
+    "openapi-typescript": "^7.10.1",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.7",
+    "@storybook/addon-vitest": "^10.2.8",
+    "@storybook/react-vite": "^10.2.8",
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
     "openapi-fetch": "^0.15.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "storybook": "^10.2.8",
     "zustand": "^5.0.9"
   }
 }

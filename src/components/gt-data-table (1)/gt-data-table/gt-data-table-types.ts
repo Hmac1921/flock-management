@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type {ReactNode} from 'react';
 
 export type ColumnProps<T extends Record<string, unknown> = Record<string, unknown>> = {
   field: keyof T & string;

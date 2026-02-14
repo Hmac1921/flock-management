@@ -32,22 +32,35 @@ const GTRowCountDropdown = ({ pageCount, type = 'main', onChange }: GTRowCountDr
 
   return (
     <div className="relative" ref={ref}>
-      <div className="flex justify-end items-end ">
-        <input id="row-count" className="w-1/7" type="text" value={pageCount} readOnly />
-        <div onClick={() => setOpen((prev) => !prev)}>
+      <div className="flex items-center gap-2">
+        <input
+          id="row-count"
+          className="h-9 w-16 rounded-[--radius-lg] border border-[--border] bg-[--surface] text-center text-sm text-[--ink]"
+          type="text"
+          value={pageCount}
+          readOnly
+        />
+        <div
+          className="cursor-pointer text-[--ink] transition hover:text-[--brand-strong]"
+          onClick={() => setOpen((prev) => !prev)}
+        >
           <ArrowDropDown />
         </div>
       </div>
       {open && (
-        <ul className="absolute bg-[var(--muidefaults-background-paper-elevation-2)] z-[var(--zIndex-modal)]  px-4 py-2 right-0 flex flex-col items-center">
+        <ul className="absolute right-0 z-50 mt-2 flex w-20 flex-col overflow-hidden rounded-[--radius-lg] border border-[--border] bg-[--surface] text-sm text-[--ink] shadow-[--shadow-card]">
           {options.length > 0 ? (
             options.map((item, i) => (
-              <li className="cursor-default" key={i} onClick={() => handleSelect(item)}>
+              <li
+                className="cursor-pointer px-3 py-2 text-center hover:bg-[--surface-muted]"
+                key={i}
+                onClick={() => handleSelect(item)}
+              >
                 {item}
               </li>
             ))
           ) : (
-            <p>Loading ...</p>
+            <p className="px-3 py-2">Loading ...</p>
           )}
         </ul>
       )}

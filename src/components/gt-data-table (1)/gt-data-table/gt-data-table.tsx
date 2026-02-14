@@ -1,12 +1,12 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
-import { Table } from './gt-data-table-context';
+import { Table, useTableContext } from './gt-data-table-context';
 import useRenderRows from './table-hooks/use-render-rows';
 
 import type { ColumnProps } from './gt-data-table-types';
 import GTPagination from './table-components/gt-pagination';
 import GTRowCountDropdown from './table-components/gt-row-count-dropdown';
-
+import { ACTION_TYPES } from './gt-data-table.reducer';
 
 type GTDataTableProps<T extends Record<string, unknown> = Record<string, unknown>> = {
   toolbar?: ReactNode;
@@ -26,35 +26,42 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
   toolbar,
   columns = [],
   data = [],
-  filters = {},
+  filters,
   filterPredicate,
   pagination,
   onPaginationChange,
   showPagination = true,
 }: GTDataTableProps<T>) => {
-  // const [state, dispatch] = useReducer<Reducer<TableState, TableAction>>(reducer, initialArg);
+  return (
+    <Table>
+      <GTDataTableContent
+        toolbar={toolbar}
+        columns={columns}
+        data={data}
+        filters={filters}
+        filterPredicate={filterPredicate}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        showPagination={showPagination}
+      />
+    </Table>
+  );
+};
 
-  // useEffect(() => {
-  //   if (state.filterPayload) {
-  //     let obj = {};
+export default GTDataTableSearch;
 
-  //     for (const key in filterPayload) {
-  //       if (filterPayload[key]) {
-  //         obj = { ...obj, [key]: filterPayload[key] };
-  //       }
-  //     }
-
-  //     loadFiltered(endpoint, tableSettingsPayload, obj, dispatch);
-  //   }
-  // }, [filterPayload]);
-
-
-  const [internalPagination, setInternalPagination] = useState({
-    page: 1,
-    pageCount: 15,
-  });
-  const activePagination = pagination ?? internalPagination;
-
+const GTDataTableContent = <T extends Record<string, unknown>>({
+  toolbar,
+  columns = [],
+  data = [],
+  filters,
+  filterPredicate,
+  pagination,
+  onPaginationChange,
+  showPagination = true,
+}: GTDataTableProps<T>) => {
+  const { state, dispatch } = useTableContext();
+  const activePagination = pagination ?? state.pagination;
   const canUpdatePagination = Boolean(onPaginationChange) || !pagination;
   const updatePagination = (payload: { page: number; pageCount: number }) => {
     if (onPaginationChange) {
@@ -62,8 +69,20 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
     }
 
     if (!pagination) {
-      setInternalPagination(payload);
+      dispatch({ type: ACTION_TYPES.SET_PAGINATION, pagination: payload });
     }
+  };
+
+  type DateRangeFilterValue = { start?: string; end?: string };
+
+  const isDateRangeFilterValue = (
+    value: unknown
+  ): value is DateRangeFilterValue => {
+    if (!value || typeof value !== 'object') {
+      return false;
+    }
+
+    return 'start' in value || 'end' in value;
   };
 
   const isFilterEmpty = (value: unknown) => {
@@ -75,7 +94,44 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
       return value.length === 0;
     }
 
+    if (isDateRangeFilterValue(value)) {
+      return !value.start && !value.end;
+    }
+
     return false;
+  };
+
+  const parseDateValue = (value: unknown) => {
+    if (value instanceof Date) {
+      return isNaN(value.getTime()) ? null : value;
+    }
+
+    if (typeof value === 'number') {
+      const date = new Date(value);
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    if (typeof value === 'string') {
+      if (value.trim() === '') {
+        return null;
+      }
+
+      const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+      const date = new Date(isDateOnly ? `${value}T00:00:00` : value);
+      return isNaN(date.getTime()) ? null : date;
+    }
+
+    return null;
+  };
+
+  const parseDateInput = (value: string | undefined, isEnd?: boolean) => {
+    if (!value) {
+      return null;
+    }
+
+    const suffix = isEnd ? 'T23:59:59.999' : 'T00:00:00';
+    const date = new Date(`${value}${suffix}`);
+    return isNaN(date.getTime()) ? null : date;
   };
 
   const defaultFilterPredicate = (
@@ -89,7 +145,24 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
 
       const rowValue = row[key as keyof T];
 
-      if (typeof value === 'string') {
+      if (isDateRangeFilterValue(value)) {
+        const rowDate = parseDateValue(rowValue);
+
+        if (!rowDate) {
+          return false;
+        }
+
+        const startDate = parseDateInput(value.start);
+        const endDate = parseDateInput(value.end, true);
+
+        if (startDate && rowDate < startDate) {
+          return false;
+        }
+
+        if (endDate && rowDate > endDate) {
+          return false;
+        }
+      } else if (typeof value === 'string') {
         if (rowValue === null || rowValue === undefined) {
           return false;
         }
@@ -109,12 +182,17 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
     return true;
   };
 
+  const activeFilters =
+    (filters ?? state.filters) as Partial<Record<keyof T, unknown>>;
+
   const filteredData = data.filter((row) => {
-    if (!filters || Object.keys(filters).length === 0) {
+    if (!activeFilters || Object.keys(activeFilters).length === 0) {
       return true;
     }
 
-    return filterPredicate ? filterPredicate(row, filters) : defaultFilterPredicate(row, filters);
+    return filterPredicate
+      ? filterPredicate(row, activeFilters)
+      : defaultFilterPredicate(row, activeFilters);
   });
 
   const lastPageNumber = Math.max(1, Math.ceil(filteredData.length / activePagination.pageCount));
@@ -133,33 +211,31 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
   }, [activePagination, canUpdatePagination, lastPageNumber]);
 
   useEffect(() => {
-    if (!canUpdatePagination || !filters) {
+    if (filters === undefined) {
+      return;
+    }
+
+    dispatch({ type: ACTION_TYPES.SET_FILTERS, filters });
+  }, [dispatch, filters]);
+
+  useEffect(() => {
+    if (!canUpdatePagination || filters === undefined) {
       return;
     }
 
     if (activePagination.page !== 1) {
       updatePagination({ ...activePagination, page: 1 });
     }
-  }, [canUpdatePagination, filters]);
+  }, [activePagination, canUpdatePagination, filters]);
 
   return (
-    <Table>
-      <Table.Toolbar>
-        {toolbar}
-    
-      </Table.Toolbar>
-      <Table.Container columns={columns}>
+    <>
+      <Table.Toolbar>{toolbar}</Table.Toolbar>
+      <Table.Container columns={columns as ColumnProps[]}>
         <Table.Header>
           {columns.map((column, i) => (
-            <Table.ColumnHeader key={i} column={column}>
+            <Table.ColumnHeader key={i} column={column as ColumnProps}>
               {column.header}
-              {/* <Table.ColumnSorting
-                currentSorting={state.pagePayload}
-                header={column.field}
-                onClick={(value) =>
-                  changePage(endpoint, { ...tableSettingsPayload, ...value }, filterPayload, dispatch)
-                }
-              /> */}
             </Table.ColumnHeader>
           ))}
         </Table.Header>
@@ -186,8 +262,6 @@ const GTDataTableSearch = <T extends Record<string, unknown>>({
           />
         </Table.ToolbarPagination>
       )}
-    </Table>
+    </>
   );
 };
-
-export default GTDataTableSearch;

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import {type JSX, useEffect, useState} from 'react';
+import * as React from "react";
 
 type ResizerProps = {
   children: ({ ref }: { ref: React.Ref<HTMLDivElement> }) => JSX.Element;

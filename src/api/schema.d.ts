@@ -48,7 +48,348 @@ export interface paths {
         /** List Sheep */
         get: operations["list_sheep_sheep_get"];
         put?: never;
+        /** Create Sheep */
+        post: operations["create_sheep_sheep_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sheep/{guid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Sheep */
+        get: operations["get_sheep_sheep__guid__get"];
+        put?: never;
         post?: never;
+        /** Delete Sheep */
+        delete: operations["delete_sheep_sheep__guid__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vet/medicines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vet List Medicines */
+        get: operations["vet_list_medicines_vet_medicines_get"];
+        put?: never;
+        /** Vet Create Medicine */
+        post: operations["vet_create_medicine_vet_medicines_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vet/stock/lots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vet List Stock Lots */
+        get: operations["vet_list_stock_lots_vet_stock_lots_get"];
+        put?: never;
+        /** Vet Create Stock Lot */
+        post: operations["vet_create_stock_lot_vet_stock_lots_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vet/treatments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vet List Treatments */
+        get: operations["vet_list_treatments_vet_treatments_get"];
+        put?: never;
+        /** Vet Create Treatment */
+        post: operations["vet_create_treatment_vet_treatments_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sheep/{guid}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Sheep Events */
+        get: operations["list_sheep_events_sheep__guid__events_get"];
+        put?: never;
+        /** Create Sheep Event */
+        post: operations["create_sheep_event_sheep__guid__events_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sheep/{guid}/record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sheep Complete Record
+         * @description Returns a "complete record" for a sheep:
+         *       - sheep identity
+         *       - timeline: sheep_events (all non-vet_treatment events) + enriched vet_treatments
+         *       - withdrawal status (computed)
+         *
+         *     scope:
+         *       - internal: includes staff notes
+         *       - public: redacts free-text notes + administered_by
+         */
+        get: operations["sheep_complete_record_sheep__guid__record_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vet/withdrawal-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Vet Withdrawal Status
+         * @description Convenience endpoint for "OK to sell/move?" checks.
+         */
+        get: operations["vet_withdrawal_status_vet_withdrawal_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Locations */
+        get: operations["list_locations_locations_get"];
+        put?: never;
+        /** Create Location */
+        post: operations["create_location_locations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Fields */
+        get: operations["list_fields_fields_get"];
+        put?: never;
+        /** Create Field */
+        post: operations["create_field_fields_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fields/{field_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Field */
+        get: operations["get_field_fields__field_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/weather": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Weather
+         * @description Simple lat/lon weather forecast using Open-Meteo.
+         *     Defaults to the farmhouse coordinates.
+         *     Wind speed returned in mph.
+         */
+        get: operations["get_weather_weather_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/anmarts/auctions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Anmarts Auctions
+         * @description Returns structured auction listing info from ANMarts.
+         *
+         *     Implementation:
+         *       - POST to the same AJAX endpoint used by the website:
+         *         https://www.anmarts.co.uk/wp-content/themes/chop/ajax/load_auctions.php
+         *       - That endpoint returns JSON: {"auctions":[...]}
+         *       - We transform it into a smaller, stable API shape.
+         */
+        get: operations["anmarts_auctions_anmarts_auctions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Prices */
+        get: operations["prices_prices_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/grain-prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Grain Prices */
+        get: operations["grain_prices_grain_prices_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sheep-prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sheep Prices */
+        get: operations["sheep_prices_sheep_prices_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/digest/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Digest Status */
+        get: operations["digest_status_digest_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/digest/weekly/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Digest Weekly Preview */
+        get: operations["digest_weekly_preview_digest_weekly_preview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/digest/weekly/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Digest Weekly Send */
+        post: operations["digest_weekly_send_digest_weekly_send_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -59,6 +400,103 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** FieldIn */
+        FieldIn: {
+            /** Name */
+            name: string;
+            /** Crop */
+            crop?: string | null;
+            /** Crop Year */
+            crop_year?: number | null;
+            /** Notes */
+            notes?: string | null;
+            /** Geometry */
+            geometry: {
+                [key: string]: unknown;
+            };
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LocationIn */
+        LocationIn: {
+            /** Name */
+            name: string;
+            /**
+             * Kind
+             * @default farm
+             */
+            kind: string | null;
+            /** Notes */
+            notes?: string | null;
+            /** Geometry */
+            geometry: {
+                [key: string]: unknown;
+            };
+        };
+        /** SheepEventIn */
+        SheepEventIn: {
+            /** Event Type */
+            event_type: string;
+            /** Occurred At */
+            occurred_at?: string | null;
+            /** Data */
+            data?: {
+                [key: string]: unknown;
+            } | null;
+            /** Recorded By */
+            recorded_by?: string | null;
+            /** Supersedes Event Id */
+            supersedes_event_id?: string | null;
+            /** Source */
+            source?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** SheepEventOut */
+        SheepEventOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Sheep Guid
+             * Format: uuid
+             */
+            sheep_guid: string;
+            /** Sheep Tagnr */
+            sheep_tagnr?: string | null;
+            /** Event Type */
+            event_type: string;
+            /** Occurred At */
+            occurred_at: string;
+            /** Data */
+            data: {
+                [key: string]: unknown;
+            };
+            /** Recorded By */
+            recorded_by?: string | null;
+            /** Recorded At */
+            recorded_at: string;
+            /** Supersedes Event Id */
+            supersedes_event_id?: string | null;
+            /** Source */
+            source?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** SheepIn */
+        SheepIn: {
+            /** Tagnr */
+            tagnr: string;
+            /** Name */
+            name: string;
+            /** Age */
+            age: number;
+        };
         /** SheepOut */
         SheepOut: {
             /**
@@ -72,6 +510,192 @@ export interface components {
             name: string;
             /** Age */
             age: number;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
+        /** VetMedicineIn */
+        VetMedicineIn: {
+            /** Name */
+            name: string;
+            /** Active Ingredient */
+            active_ingredient?: string | null;
+            /** Species */
+            species?: string | null;
+            /** Form */
+            form?: string | null;
+            /** Strength */
+            strength?: string | null;
+            /** Default Route */
+            default_route?: string | null;
+            /** Default Unit */
+            default_unit?: string | null;
+            /**
+             * Withdrawal Meat Days
+             * @default 0
+             */
+            withdrawal_meat_days: number;
+            /**
+             * Withdrawal Milk Days
+             * @default 0
+             */
+            withdrawal_milk_days: number;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** VetMedicineOut */
+        VetMedicineOut: {
+            /** Name */
+            name: string;
+            /** Active Ingredient */
+            active_ingredient?: string | null;
+            /** Species */
+            species?: string | null;
+            /** Form */
+            form?: string | null;
+            /** Strength */
+            strength?: string | null;
+            /** Default Route */
+            default_route?: string | null;
+            /** Default Unit */
+            default_unit?: string | null;
+            /**
+             * Withdrawal Meat Days
+             * @default 0
+             */
+            withdrawal_meat_days: number;
+            /**
+             * Withdrawal Milk Days
+             * @default 0
+             */
+            withdrawal_milk_days: number;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** VetStockLotIn */
+        VetStockLotIn: {
+            /**
+             * Medicine Id
+             * Format: uuid
+             */
+            medicine_id: string;
+            /** Lot Number */
+            lot_number?: string | null;
+            /** Expiry Date */
+            expiry_date?: string | null;
+            /** Quantity */
+            quantity: number;
+            /** Unit */
+            unit: string;
+            /** Location */
+            location?: string | null;
+            /** Supplier */
+            supplier?: string | null;
+            /** Received At */
+            received_at?: string | null;
+        };
+        /** VetStockLotOut */
+        VetStockLotOut: {
+            /**
+             * Medicine Id
+             * Format: uuid
+             */
+            medicine_id: string;
+            /** Lot Number */
+            lot_number?: string | null;
+            /** Expiry Date */
+            expiry_date?: string | null;
+            /** Quantity */
+            quantity: number;
+            /** Unit */
+            unit: string;
+            /** Location */
+            location?: string | null;
+            /** Supplier */
+            supplier?: string | null;
+            /** Received At */
+            received_at?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** VetTreatmentIn */
+        VetTreatmentIn: {
+            /** Sheep Guid */
+            sheep_guid?: string | null;
+            /** Sheep Tagnr */
+            sheep_tagnr?: string | null;
+            /**
+             * Medicine Id
+             * Format: uuid
+             */
+            medicine_id: string;
+            /** Lot Id */
+            lot_id?: string | null;
+            /** Administered At */
+            administered_at?: string | null;
+            /** Dose */
+            dose: number;
+            /** Dose Unit */
+            dose_unit: string;
+            /** Route */
+            route?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Administered By */
+            administered_by?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** VetTreatmentOut */
+        VetTreatmentOut: {
+            /** Sheep Guid */
+            sheep_guid?: string | null;
+            /** Sheep Tagnr */
+            sheep_tagnr?: string | null;
+            /**
+             * Medicine Id
+             * Format: uuid
+             */
+            medicine_id: string;
+            /** Lot Id */
+            lot_id?: string | null;
+            /** Administered At */
+            administered_at?: string | null;
+            /** Dose */
+            dose: number;
+            /** Dose Unit */
+            dose_unit: string;
+            /** Route */
+            route?: string | null;
+            /** Reason */
+            reason?: string | null;
+            /** Administered By */
+            administered_by?: string | null;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Withdrawal Meat Until */
+            withdrawal_meat_until?: string | null;
+            /** Withdrawal Milk Until */
+            withdrawal_milk_until?: string | null;
         };
     };
     responses: never;
@@ -138,6 +762,811 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SheepOut"][];
+                };
+            };
+        };
+    };
+    create_sheep_sheep_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SheepIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SheepOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_sheep_sheep__guid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SheepOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_sheep_sheep__guid__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vet_list_medicines_vet_medicines_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VetMedicineOut"][];
+                };
+            };
+        };
+    };
+    vet_create_medicine_vet_medicines_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VetMedicineIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VetMedicineOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vet_list_stock_lots_vet_stock_lots_get: {
+        parameters: {
+            query?: {
+                medicine_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VetStockLotOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vet_create_stock_lot_vet_stock_lots_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VetStockLotIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VetStockLotOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vet_list_treatments_vet_treatments_get: {
+        parameters: {
+            query?: {
+                sheep_guid?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VetTreatmentOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vet_create_treatment_vet_treatments_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VetTreatmentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VetTreatmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_sheep_events_sheep__guid__events_get: {
+        parameters: {
+            query?: {
+                event_type?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SheepEventOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_sheep_event_sheep__guid__events_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SheepEventIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SheepEventOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sheep_complete_record_sheep__guid__record_get: {
+        parameters: {
+            query?: {
+                scope?: string;
+                limit_events?: number;
+                limit_treatments?: number;
+            };
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vet_withdrawal_status_vet_withdrawal_status_get: {
+        parameters: {
+            query?: {
+                sheep_guid?: string | null;
+                sheep_tagnr?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_locations_locations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    create_location_locations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LocationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_fields_fields_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    create_field_fields_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FieldIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_field_fields__field_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                field_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_weather_weather_get: {
+        parameters: {
+            query?: {
+                lat?: number;
+                lon?: number;
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    anmarts_auctions_anmarts_auctions_get: {
+        parameters: {
+            query?: {
+                raw?: number;
+                status?: string;
+                sale_type?: string;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    prices_prices_get: {
+        parameters: {
+            query?: {
+                /** @description grain or sheep */
+                category?: string[] | null;
+                /** @description prime or feeding (sheep only) */
+                type?: string[] | null;
+                /** @description commodity slug(s) */
+                commodity?: string[] | null;
+                /** @description source slug(s) e.g. fas, caledonian, anm */
+                source?: string[] | null;
+                /** @description set to 1 to bypass cache */
+                refresh?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grain_prices_grain_prices_get: {
+        parameters: {
+            query?: {
+                refresh?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sheep_prices_sheep_prices_get: {
+        parameters: {
+            query?: {
+                /** @description prime or feeding */
+                type?: string | null;
+                refresh?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    digest_status_digest_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    digest_weekly_preview_digest_weekly_preview_get: {
+        parameters: {
+            query?: {
+                days?: number;
+                refresh_prices?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    digest_weekly_send_digest_weekly_send_post: {
+        parameters: {
+            query?: {
+                days?: number;
+                refresh_prices?: number;
+                /** @description Override DIGEST_EMAIL_TO; repeat param or comma-separate */
+                to?: string[] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, FirstPage, LastPage } from '@mui/icons-material';
-import { MouseEvent } from 'react';
+import type {MouseEvent} from 'react';
 
 type GTPaginationProps = {
   payload: {
@@ -23,8 +23,8 @@ const GTPagination = ({ payload, count, onChange }: GTPaginationProps) => {
   };
 
   const cssClassNames = {
-    available: 'hover:text-[var(--text-hover)]',
-    disabled: 'text-[var(--muidefaults-action-disabled)]',
+    available: 'cursor-pointer text-[--ink] transition hover:text-[--brand-strong]',
+    disabled: 'cursor-not-allowed text-[--ink-muted] opacity-60',
   };
 
   const handleClick = (e: MouseEvent) => {
@@ -75,7 +75,7 @@ const GTPagination = ({ payload, count, onChange }: GTPaginationProps) => {
   };
 
   return (
-    <div className="flex justify-end items-center ">
+    <div className="flex items-center justify-end gap-2 text-sm text-[--ink]">
       <div
         className={currentPage >= 2 ? cssClassNames.available : cssClassNames.disabled}
         id={pagStrings.FIRST_PAGE}
@@ -89,7 +89,7 @@ const GTPagination = ({ payload, count, onChange }: GTPaginationProps) => {
         <ChevronLeft />
       </div>
       <div className="px-2 ">
-        <p>
+        <p className="font-medium">
           {`${currentPage}`} / {`${lastPageNumber}`}
         </p>
       </div>

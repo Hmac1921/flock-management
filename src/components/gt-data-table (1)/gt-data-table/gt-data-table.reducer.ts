@@ -1,80 +1,126 @@
-const ACTION_TYPES = { INIT: 'init', FILTER_LIST: 'filter-list', LOADING: 'loading', ERROR: 'error' } as const;
+import { type ColumnProps } from "./gt-data-table-types";
 
-type SearchResponse = {
-  list: Record<string, unknown>[];
-  count: number;
+const ACTION_TYPES = Object.freeze({
+  INIT: "init",
+  RESIZE_COLUMN: "resize-column",
+  SET_PAGINATION: "set-pagination",
+  SET_SORT: "set-sort",
+  SET_FILTERS: "set-filters",
+  RESET_FILTERS: "reset-filters",
+});
+
+export type TableAction =
+  | { type: "init"; columns: ColumnProps<Record<string, unknown>>[] }
+  | { type: "resize-column"; value: string; field: string }
+  | { type: "set-pagination"; pagination: PaginationState }
+  | { type: "set-sort"; sort: SortState }
+  | { type: "set-filters"; filters: Partial<Record<string, unknown>> }
+  | { type: "reset-filters" };
+
+type IndexedTableProps = {
+  field: string;
+  header: string;
+  cell?: string;
+  flex?: number;
+  index: number;
 };
 
-type PagePayload = {
-  pageCount: number;
+type PaginationState = {
   page: number;
-  sortColumn: string;
-  sortOrder: string;
+  pageCount: number;
 };
 
-type TableAction =
-  | { type: 'init'; data: SearchResponse; tablePayload: PagePayload; filterPayload: Record<string, unknown> }
-  | { type: 'filter-list'; data: SearchResponse; tablePayload: PagePayload; filterPayload: Record<string, unknown> }
-  | { type: 'loading' }
-  | { type: 'error' };
+type SortState = {
+  sortColumn: string;
+  sortOrder: "asc" | "desc";
+};
 
-type TableState = {
-  initialData: Record<string, unknown>[];
-  count: number;
-  pagePayload: PagePayload;
-  filterPayload: Record<string, unknown> | null;
-  loading: boolean;
-  error: boolean;
+export type TableState = {
+  columns: ColumnProps<Record<string, unknown>>[];
+  gridTemplateColumns: Array<string>;
+  currentGridSizes: string;
+  pagination: PaginationState;
+  sort: SortState;
+  filters: Partial<Record<string, unknown>>;
 };
 
 const initialArg: TableState = {
-  initialData: [],
-  count: 0,
-  pagePayload: { pageCount: 15, page: 1, sortColumn: 'name', sortOrder: 'desc' },
-  filterPayload: null,
-  loading: true,
-  error: false,
+  columns: [],
+  gridTemplateColumns: [],
+  currentGridSizes: "",
+  pagination: { page: 1, pageCount: 15 },
+  sort: { sortColumn: "", sortOrder: "asc" },
+  filters: {},
 };
-
-// function ObjectPairTypes<K, V>(key: K, value: V): { key: K; value: V } {
-//   return { key: key, value: value };
-// }
 
 const reducer = (state: TableState, action: TableAction) => {
   switch (action.type) {
     case ACTION_TYPES.INIT: {
+      const arr: string[] = [];
+      const indexed: IndexedTableProps[] = [];
+
+      action.columns.forEach((item, i) => {
+        if (item.flex) {
+          arr.push(` ${item.flex}fr`);
+        } else {
+          arr.push(" 1fr");
+        }
+
+        indexed.push({
+          ...item,
+          index: i,
+        });
+      });
+
       return {
         ...state,
-        pagePayload: action.tablePayload,
-        filterPayload: action.filterPayload,
-        count: action.data.count,
-        initialData: action.data.list,
-        loading: false,
+        columns: indexed,
+        gridTemplateColumns: arr,
+        currentGridSizes: arr.join(" "),
       };
     }
 
-    case ACTION_TYPES.FILTER_LIST: {
+    case ACTION_TYPES.RESIZE_COLUMN: {
+      const arr: string[] = [];
+
+      state.columns.forEach((item) => {
+        if (item.field === action.field) {
+          arr.push(` ${action.value}`);
+        } else {
+          arr.push(" 1fr");
+        }
+      });
+
       return {
         ...state,
-        pagePayload: action.tablePayload,
-        filterPayload: { ...state.filterPayload, ...action.filterPayload },
-        count: action.data.count,
-        initialData: action.data.list,
-        loading: false,
+        gridTemplateColumns: arr,
+        currentGridSizes: arr.join(" "),
       };
     }
 
-    case ACTION_TYPES.LOADING:
+    case ACTION_TYPES.SET_PAGINATION:
       return {
         ...state,
-        loading: true,
+        pagination: action.pagination,
       };
 
-    case ACTION_TYPES.ERROR:
+    case ACTION_TYPES.SET_SORT:
       return {
         ...state,
-        loading: false,
-        error: true,
+        sort: action.sort,
+      };
+
+    case ACTION_TYPES.SET_FILTERS:
+      return {
+        ...state,
+        filters: { ...state.filters, ...action.filters },
+      };
+
+    case ACTION_TYPES.RESET_FILTERS:
+      return {
+        ...state,
+        filters: {},
+        pagination: { ...state.pagination, page: 1 },
       };
 
     default:
@@ -83,4 +129,3 @@ const reducer = (state: TableState, action: TableAction) => {
 };
 
 export { reducer, initialArg, ACTION_TYPES };
-export type { TableState, TableAction };

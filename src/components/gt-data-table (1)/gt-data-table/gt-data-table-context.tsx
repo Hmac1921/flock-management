@@ -10,8 +10,8 @@ import {
 
 import type { ColumnProps } from "./gt-data-table-types";
 import { GTDataTableResizer } from "./gt-data-table-resizer";
-import { ACTION_TYPES, initialArg, reducer } from "./gt-data-table-settings.reducer";
-import type { TableAction, TableState } from "./gt-data-table-settings.reducer";
+import { ACTION_TYPES, initialArg, reducer } from "./gt-data-table.reducer";
+import type { TableAction, TableState } from "./gt-data-table.reducer";
 
 type TableDispatch = (action: TableAction) => void;
 
@@ -25,6 +25,9 @@ const DataTableContext = createContext<TableContext>({
     columns: [],
     gridTemplateColumns: [],
     currentGridSizes: "",
+    pagination: { page: 1, pageCount: 15 },
+    sort: { sortColumn: "", sortOrder: "asc" },
+    filters: {},
   },
   dispatch: () => {},
 });
@@ -38,19 +41,25 @@ export const Table = ({ children }: TableProps) => {
 
   return (
     <DataTableContext.Provider value={{ state, dispatch }}>
-      <div className=" m-4 flex flex-col p-4 bg-(--muidefaults-background-paper-elevation-1) text-(--text-primary) overflow-x-hidden ">
+      <div className="surface-gradient m-4 flex flex-col overflow-x-hidden rounded-[--radius-lg] border border-[--border] bg-[--surface] p-4 text-[--ink] shadow-[--shadow-card]">
         {children}
       </div>
     </DataTableContext.Provider>
   );
 };
 
+export const useTableContext = () => useContext(DataTableContext);
+
 type ToolbarProps = {
   children: ReactNode;
 };
 
 const Toolbar = ({ children }: ToolbarProps) => {
-  return <div className="flex justify-between pb-4 pt-2 py-1">{children}</div>;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[--border] pb-3 pt-2">
+      {children}
+    </div>
+  );
 };
 
 type ToolbarPaginationProps = {
@@ -59,13 +68,15 @@ type ToolbarPaginationProps = {
 
 const ToolbarPagination = ({ children }: ToolbarPaginationProps) => {
   return (
-    <div className="flex items-center justify-end gap-4 p-2">{children}</div>
+    <div className="mt-3 flex flex-wrap items-center justify-end gap-4 border-t border-[--border] pt-3">
+      {children}
+    </div>
   );
 };
 
 type ContainerProps = {
   children: ReactNode;
-  columns: ColumnProps[];
+  columns: ColumnProps<Record<string, unknown>>[];
 };
 
 const Container = ({ children, columns }: ContainerProps) => {
@@ -83,7 +94,7 @@ const Container = ({ children, columns }: ContainerProps) => {
   }, [columns, dispatch]);
 
   return (
-    <table ref={tableRef} id="table" className="grid">
+    <table ref={tableRef} id="table" className="grid w-full">
       {children}
     </table>
   );
@@ -95,8 +106,10 @@ type HeaderProps = {
 
 const Header = ({ children }: HeaderProps) => {
   return (
-    <thead className=" contents">
-      <tr className="contents  ">{children}</tr>
+    <thead className="contents">
+      <tr className="contents text-xs font-semibold uppercase tracking-[0.2em] text-[--ink-muted]">
+        {children}
+      </tr>
     </thead>
   );
 };
@@ -148,7 +161,7 @@ const ColumnSorting = ({
 
 type ColumnHeaderProps = {
   children: ReactNode;
-  column: ColumnProps;
+  column: ColumnProps<Record<string, unknown>>;
 };
 
 const ColumnHeader = ({ children, column }: ColumnHeaderProps) => {
@@ -165,11 +178,11 @@ const ColumnHeader = ({ children, column }: ColumnHeaderProps) => {
       }
     >
       {({ ref }: { ref: Ref<HTMLDivElement> }) => (
-        <th className=" relative text-left  pl-2 border-b">
+        <th className="surface-muted-gradient relative border-b border-[--border] bg-[--surface-muted] px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[--ink-muted]">
           {children}
 
           <div
-            className="bg-transparent absolute top-0 right-0 h-full w-1.5 hover:bg-(--text-primary)"
+            className="absolute right-0 top-0 h-full w-1.5 bg-transparent hover:bg-[--brand-soft]"
             ref={ref}
           ></div>
         </th>
@@ -197,7 +210,7 @@ const Row = ({ children, onClick, cellData }: RowProps) => {
     <tr
       // onMouseOver={() => state.onHover && state.onHover(state.row)} TODO
       onClick={() => onClick && cellData && onClick(cellData)}
-      className="contents "
+      className="contents group"
     >
       {children}
     </tr>
@@ -210,8 +223,8 @@ type CellProps = {
 
 const Cell = ({ children }: CellProps) => {
   return (
-    <td className="  p-1.5 border-t border-collapse ">
-      <span className=" pl-2 block overflow-hidden overflow-ellipsis whitespace-nowrap">
+    <td className="border-t border-[--border] px-3 py-2 text-sm text-[--ink] transition group-hover:bg-[--surface-muted]">
+      <span className="block overflow-hidden overflow-ellipsis whitespace-nowrap">
         {" "}
         {children}
       </span>

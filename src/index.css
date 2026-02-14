@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -11,6 +12,13 @@
   --color-border-dark: #1f2937;
   --color-ink-dark: #e2e8f0;
   --color-ink-muted-dark: #94a3b8;
+  --color-brand: #2f6f4e;
+  --color-brand-strong: #24553c;
+  --color-brand-soft: #e6f3ec;
+  --color-accent: #cc7a2d;
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-danger: #c2410c;
 }
 
 :root {
@@ -20,23 +28,243 @@
   --border: var(--color-border);
   --ink: var(--color-ink);
   --ink-muted: var(--color-ink-muted);
+  --brand: var(--color-brand);
+  --brand-strong: var(--color-brand-strong);
+  --brand-soft: var(--color-brand-soft);
+  --accent: var(--color-accent);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --danger: var(--color-danger);
+  --on-brand: #f8fafc;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --shadow-card: 0 10px 30px -18px rgba(15, 23, 42, 0.35);
+  --shadow-button: 0 12px 24px -18px rgba(47, 111, 78, 0.65);
+  --focus-ring: rgba(47, 111, 78, 0.3);
+  --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --surface-gradient: linear-gradient(135deg, rgba(47, 111, 78, 0.08), rgba(255, 255, 255, 0) 55%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(204, 122, 45, 0.12), rgba(241, 245, 249, 0) 60%);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-color-mode='light']):not([data-color-mode='dark']),
+  :root[data-color-mode='auto'] {
     color-scheme: dark;
     --surface: var(--color-surface-dark);
     --surface-muted: var(--color-surface-muted-dark);
     --border: var(--color-border-dark);
     --ink: var(--color-ink-dark);
     --ink-muted: var(--color-ink-muted-dark);
+    --surface-gradient: linear-gradient(135deg, rgba(47, 111, 78, 0.18), rgba(11, 18, 32, 0) 60%);
+    --surface-muted-gradient: linear-gradient(135deg, rgba(204, 122, 45, 0.2), rgba(17, 24, 39, 0) 65%);
   }
+
+  :root[data-color-mode='auto'][data-season='winter'] {
+    --surface: #0f1824;
+    --surface-muted: #172233;
+    --border: #28354a;
+    --ink: #e6eef7;
+    --ink-muted: #9db2c8;
+    --brand: #4b86b9;
+    --brand-strong: #3a6b96;
+    --brand-soft: #1e2a3b;
+    --accent: #f2c94c;
+    --surface-gradient: linear-gradient(135deg, rgba(75, 134, 185, 0.28), rgba(15, 24, 36, 0) 60%);
+    --surface-muted-gradient: linear-gradient(135deg, rgba(242, 201, 76, 0.2), rgba(23, 34, 51, 0) 65%);
+  }
+
+  :root[data-color-mode='auto'][data-season='spring'] {
+    --surface: #0f1b16;
+    --surface-muted: #18261f;
+    --border: #2a3b32;
+    --ink: #e4f3ec;
+    --ink-muted: #9fb9ac;
+    --brand: #6fc8a5;
+    --brand-strong: #4fa580;
+    --brand-soft: #1c2b24;
+    --accent: #f0a7bf;
+    --surface-gradient: linear-gradient(135deg, rgba(111, 200, 165, 0.26), rgba(15, 27, 22, 0) 60%);
+    --surface-muted-gradient: linear-gradient(135deg, rgba(240, 167, 191, 0.22), rgba(24, 38, 31, 0) 65%);
+  }
+
+  :root[data-color-mode='auto'][data-season='summer'] {
+    --surface: #1b120b;
+    --surface-muted: #261a10;
+    --border: #3a2616;
+    --ink: #fff1e6;
+    --ink-muted: #d0b29e;
+    --brand: #ff914a;
+    --brand-strong: #e56f22;
+    --brand-soft: #2b1f15;
+    --accent: #27c69b;
+    --surface-gradient: linear-gradient(135deg, rgba(255, 145, 74, 0.32), rgba(27, 18, 11, 0) 60%);
+    --surface-muted-gradient: linear-gradient(135deg, rgba(39, 198, 155, 0.24), rgba(38, 26, 16, 0) 65%);
+  }
+
+  :root[data-color-mode='auto'][data-season='autumn'] {
+    --surface: #1a0f0b;
+    --surface-muted: #251511;
+    --border: #3b211b;
+    --ink: #ffe9de;
+    --ink-muted: #d0a89b;
+    --brand: #e35a45;
+    --brand-strong: #bd3f2f;
+    --brand-soft: #2b1b17;
+    --accent: #ff8a3d;
+    --surface-gradient: linear-gradient(135deg, rgba(227, 90, 69, 0.3), rgba(26, 15, 11, 0) 60%);
+    --surface-muted-gradient: linear-gradient(135deg, rgba(255, 138, 61, 0.26), rgba(37, 21, 17, 0) 65%);
+  }
+}
+
+:root[data-color-mode='dark'] {
+  color-scheme: dark;
+  --surface: var(--color-surface-dark);
+  --surface-muted: var(--color-surface-muted-dark);
+  --border: var(--color-border-dark);
+  --ink: var(--color-ink-dark);
+  --ink-muted: var(--color-ink-muted-dark);
+  --surface-gradient: linear-gradient(135deg, rgba(47, 111, 78, 0.18), rgba(11, 18, 32, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(204, 122, 45, 0.2), rgba(17, 24, 39, 0) 65%);
+}
+
+:root[data-color-mode='light'] {
+  color-scheme: light;
+}
+
+:root[data-season='winter'] {
+  --surface: #f4f7fb;
+  --surface-muted: #e4eef8;
+  --border: #c8d6e8;
+  --ink: #0c1b2a;
+  --ink-muted: #4a5f77;
+  --brand: #2c5f90;
+  --brand-strong: #214a70;
+  --brand-soft: #dfeaf6;
+  --accent: #f2c94c;
+  --surface-gradient: linear-gradient(135deg, rgba(44, 95, 144, 0.22), rgba(244, 247, 251, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(242, 201, 76, 0.26), rgba(228, 238, 248, 0) 65%);
+}
+
+:root[data-season='spring'] {
+  --surface: #f6fbf6;
+  --surface-muted: #e8f7ef;
+  --border: #cfead9;
+  --ink: #163320;
+  --ink-muted: #5a7b66;
+  --brand: #79c2a3;
+  --brand-strong: #52a184;
+  --brand-soft: #e6f7ef;
+  --accent: #f4b6c4;
+  --surface-gradient: linear-gradient(135deg, rgba(121, 194, 163, 0.22), rgba(246, 251, 246, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(244, 182, 196, 0.22), rgba(232, 247, 239, 0) 65%);
+}
+
+:root[data-season='summer'] {
+  --surface: #fff6ec;
+  --surface-muted: #ffe2c2;
+  --border: #ffcfa3;
+  --ink: #3b1f0f;
+  --ink-muted: #6b3b24;
+  --brand: #ff7a18;
+  --brand-strong: #e45a00;
+  --brand-soft: #ffe4cc;
+  --accent: #10b981;
+  --surface-gradient: linear-gradient(135deg, rgba(255, 122, 24, 0.28), rgba(255, 246, 236, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(255, 226, 194, 0) 65%);
+}
+
+:root[data-season='autumn'] {
+  --surface: #fff3e9;
+  --surface-muted: #f9ddc7;
+  --border: #f0c3a4;
+  --ink: #3a1b12;
+  --ink-muted: #6b3a2b;
+  --brand: #c23b2a;
+  --brand-strong: #9e2d20;
+  --brand-soft: #f6d8cf;
+  --accent: #f97316;
+  --surface-gradient: linear-gradient(135deg, rgba(194, 59, 42, 0.26), rgba(255, 243, 233, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(249, 115, 22, 0.26), rgba(249, 221, 199, 0) 65%);
+}
+
+:root[data-color-mode='dark'][data-season='winter'] {
+  --surface: #0f1824;
+  --surface-muted: #172233;
+  --border: #28354a;
+  --ink: #e6eef7;
+  --ink-muted: #9db2c8;
+  --brand: #4b86b9;
+  --brand-strong: #3a6b96;
+  --brand-soft: #1e2a3b;
+  --accent: #f2c94c;
+  --surface-gradient: linear-gradient(135deg, rgba(75, 134, 185, 0.28), rgba(15, 24, 36, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(242, 201, 76, 0.2), rgba(23, 34, 51, 0) 65%);
+}
+
+:root[data-color-mode='dark'][data-season='spring'] {
+  --surface: #0f1b16;
+  --surface-muted: #18261f;
+  --border: #2a3b32;
+  --ink: #e4f3ec;
+  --ink-muted: #9fb9ac;
+  --brand: #6fc8a5;
+  --brand-strong: #4fa580;
+  --brand-soft: #1c2b24;
+  --accent: #f0a7bf;
+  --surface-gradient: linear-gradient(135deg, rgba(111, 200, 165, 0.26), rgba(15, 27, 22, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(240, 167, 191, 0.22), rgba(24, 38, 31, 0) 65%);
+}
+
+:root[data-color-mode='dark'][data-season='summer'] {
+  --surface: #1b120b;
+  --surface-muted: #261a10;
+  --border: #3a2616;
+  --ink: #fff1e6;
+  --ink-muted: #d0b29e;
+  --brand: #ff914a;
+  --brand-strong: #e56f22;
+  --brand-soft: #2b1f15;
+  --accent: #27c69b;
+  --surface-gradient: linear-gradient(135deg, rgba(255, 145, 74, 0.32), rgba(27, 18, 11, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(39, 198, 155, 0.24), rgba(38, 26, 16, 0) 65%);
+}
+
+:root[data-color-mode='dark'][data-season='autumn'] {
+  --surface: #1a0f0b;
+  --surface-muted: #251511;
+  --border: #3b211b;
+  --ink: #ffe9de;
+  --ink-muted: #d0a89b;
+  --brand: #e35a45;
+  --brand-strong: #bd3f2f;
+  --brand-soft: #2b1b17;
+  --accent: #ff8a3d;
+  --surface-gradient: linear-gradient(135deg, rgba(227, 90, 69, 0.3), rgba(26, 15, 11, 0) 60%);
+  --surface-muted-gradient: linear-gradient(135deg, rgba(255, 138, 61, 0.26), rgba(37, 21, 17, 0) 65%);
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
   background-color: var(--surface);
   color: var(--ink);
   transition: background-color 150ms ease, color 150ms ease;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.surface-gradient {
+  background-image: var(--surface-gradient);
+}
+
+.surface-muted-gradient {
+  background-image: var(--surface-muted-gradient);
 }
