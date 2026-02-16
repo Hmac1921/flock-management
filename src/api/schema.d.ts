@@ -4,6 +4,78 @@
  */
 
 export interface paths {
+    "/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Current user (Cloudflare Access) */
+        get: operations["me_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user preferences */
+        get: operations["get_preferences_me_preferences_get"];
+        /** Replace user preferences */
+        put: operations["put_preferences_me_preferences_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch user preferences (shallow merge) */
+        patch: operations["patch_preferences_me_preferences_patch"];
+        trace?: never;
+    };
+    "/me/saved-searches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Saved Searches */
+        get: operations["list_saved_searches_me_saved_searches_get"];
+        put?: never;
+        /** Create Saved Search */
+        post: operations["create_saved_search_me_saved_searches_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/saved-searches/{search_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Saved Search */
+        put: operations["update_saved_search_me_saved_searches__search_id__put"];
+        post?: never;
+        /** Delete Saved Search */
+        delete: operations["delete_saved_search_me_saved_searches__search_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -67,8 +139,11 @@ export interface paths {
         get: operations["get_sheep_sheep__guid__get"];
         put?: never;
         post?: never;
-        /** Delete Sheep */
-        delete: operations["delete_sheep_sheep__guid__delete"];
+        /**
+         * Archive Sheep
+         * @description Soft-archive a sheep (keeps history; sets status=archived).
+         */
+        delete: operations["archive_sheep_sheep__guid__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -123,6 +198,46 @@ export interface paths {
         /** Vet Create Treatment */
         post: operations["vet_create_treatment_vet_treatments_post"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sheep/{guid}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Set Sheep Status
+         * @description Update status (active|archived|sold). Also writes a status_change event.
+         */
+        patch: operations["set_sheep_status_sheep__guid__status_patch"];
+        trace?: never;
+    };
+    "/sheep/{guid}/hard-delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Hard Delete Sheep
+         * @description Hard delete a sheep and its related records. Prefer soft-archive.
+         */
+        delete: operations["hard_delete_sheep_sheep__guid__hard_delete_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -436,6 +551,88 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** MeOut */
+        MeOut: {
+            /** Email */
+            email: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /** SavedSearchIn */
+        SavedSearchIn: {
+            /** Name */
+            name: string;
+            /** Resource */
+            resource: string;
+            /**
+             * Definition
+             * @default {}
+             */
+            definition: {
+                [key: string]: unknown;
+            };
+            /**
+             * Is Default
+             * @default false
+             */
+            is_default: boolean;
+            /**
+             * Pinned
+             * @default false
+             */
+            pinned: boolean;
+        };
+        /** SavedSearchOut */
+        SavedSearchOut: {
+            /** Name */
+            name: string;
+            /** Resource */
+            resource: string;
+            /**
+             * Definition
+             * @default {}
+             */
+            definition: {
+                [key: string]: unknown;
+            };
+            /**
+             * Is Default
+             * @default false
+             */
+            is_default: boolean;
+            /**
+             * Pinned
+             * @default false
+             */
+            pinned: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Created At */
+            created_at: string;
+            /** Updated At */
+            updated_at: string;
+        };
+        /** SavedSearchUpdate */
+        SavedSearchUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Resource */
+            resource?: string | null;
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+            /** Is Default */
+            is_default?: boolean | null;
+            /** Pinned */
+            pinned?: boolean | null;
+        };
         /** SheepEventIn */
         SheepEventIn: {
             /** Event Type */
@@ -496,6 +693,12 @@ export interface components {
             name: string;
             /** Age */
             age: number;
+            /**
+             * Gender
+             * @default unknown
+             * @enum {string}
+             */
+            gender: "male" | "female" | "unknown";
         };
         /** SheepOut */
         SheepOut: {
@@ -510,6 +713,34 @@ export interface components {
             name: string;
             /** Age */
             age: number;
+            /**
+             * Gender
+             * @enum {string}
+             */
+            gender: "male" | "female" | "unknown";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "archived" | "sold";
+            /** Archived At */
+            archived_at?: string | null;
+            /** Status Note */
+            status_note?: string | null;
+        };
+        /** SheepStatusUpdateIn */
+        SheepStatusUpdateIn: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "archived" | "sold";
+            /** Note */
+            note?: string | null;
+            /** Occurred At */
+            occurred_at?: string | null;
+            /** Recorded By */
+            recorded_by?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -706,6 +937,244 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    me_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeOut"];
+                };
+            };
+        };
+    };
+    get_preferences_me_preferences_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    put_preferences_me_preferences_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_preferences_me_preferences_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_saved_searches_me_saved_searches_get: {
+        parameters: {
+            query?: {
+                resource?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedSearchOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_saved_search_me_saved_searches_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedSearchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedSearchOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_saved_search_me_saved_searches__search_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                search_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedSearchUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedSearchOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_saved_search_me_saved_searches__search_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                search_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     health_health_get: {
         parameters: {
             query?: never;
@@ -748,7 +1217,10 @@ export interface operations {
     };
     list_sheep_sheep_get: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Filter by status (default: active). */
+                status?: "active" | "archived" | "sold";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -762,6 +1234,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SheepOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -830,9 +1311,12 @@ export interface operations {
             };
         };
     };
-    delete_sheep_sheep__guid__delete: {
+    archive_sheep_sheep__guid__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Optional note shown in history */
+                note?: string | null;
+            };
             header?: never;
             path: {
                 guid: string;
@@ -1029,6 +1513,73 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["VetTreatmentOut"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_sheep_status_sheep__guid__status_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SheepStatusUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SheepOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hard_delete_sheep_sheep__guid__hard_delete_delete: {
+        parameters: {
+            query?: {
+                /** @description Must be true to hard-delete */
+                confirm?: boolean;
+            };
+            header?: never;
+            path: {
+                guid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
